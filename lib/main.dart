@@ -1,69 +1,15 @@
 import 'dart:io';
 import 'dart:convert';
 
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
+import 'models/office.dart';
+import 'routes/router.dart';
+
 void main() {
   runApp(MyApp());
-}
-
-class Office {
-  final String id;
-  final String? name;
-  final String? address;
-  final String? city;
-  final String? state;
-  final String? zip;
-  final double? latitude;
-  final double? longitude;
-  final String? open;
-  final String? close;
-
-  const Office({
-    required this.id,
-    this.name,
-    this.address,
-    this.city,
-    this.state,
-    this.zip,
-    this.latitude,
-    this.longitude,
-    this.open,
-    this.close,
-  });
-
-  factory Office.fromJson(Map<String, dynamic> json) {
-    return switch (json) {
-      {
-        'id': String id,
-        'name': String name,
-        'address': String address,
-        'city': String city,
-        'state': String state,
-        'zip': String zip,
-        'latitude': double? latitude,
-        'longitude': double? longitude,
-        'open': String open,
-        'close': String close,
-      } =>
-        Office(
-          id: id,
-          name: name,
-          address: address,
-          city: city,
-          state: state,
-          zip: zip,
-          latitude: latitude,
-          longitude: longitude,
-          open: open,
-          close: close,
-        ),
-      _ => throw const FormatException('Failed to load office.'),
-    };
-  }
 }
 
 class MyApp extends StatelessWidget {
@@ -73,13 +19,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => MyAppState(),
-      child: MaterialApp(
+      child: MaterialApp.router(
         title: 'Namer App',
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         ),
-        home: MyHomePage(),
+        routerConfig: appRouter,
       ),
     );
   }
@@ -252,36 +198,6 @@ class GeneratorPage extends StatelessWidget {
             ],
           ),
         ],
-      ),
-    );
-  }
-}
-
-// ...
-
-class BigCard extends StatelessWidget {
-  const BigCard({
-    super.key,
-    required this.pair,
-  });
-
-  final WordPair pair;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final style = theme.textTheme.displayMedium!
-        .copyWith(color: theme.colorScheme.onPrimary);
-
-    return Card(
-      color: theme.colorScheme.primary,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text(
-          pair.asLowerCase,
-          style: style,
-          semanticsLabel: "${pair.first} ${pair.second}",
-        ),
       ),
     );
   }
