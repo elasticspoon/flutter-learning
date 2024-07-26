@@ -127,7 +127,7 @@ class MyAppState extends ChangeNotifier {
       print("bad login");
     }
 
-    // notifyListeners();
+    notifyListeners();
   }
 
   Future<void> put() async {
@@ -225,7 +225,7 @@ class GeneratorPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // FavoritesPage(),
+          SizedBox(height: 200, child: FavoritesPage()),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
