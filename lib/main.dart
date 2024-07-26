@@ -1,9 +1,69 @@
+import 'dart:io';
+import 'dart:convert';
+
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(MyApp());
+}
+
+class Office {
+  final String id;
+  final String? name;
+  final String? address;
+  final String? city;
+  final String? state;
+  final String? zip;
+  final double? latitude;
+  final double? longitude;
+  final String? open;
+  final String? close;
+
+  const Office({
+    required this.id,
+    this.name,
+    this.address,
+    this.city,
+    this.state,
+    this.zip,
+    this.latitude,
+    this.longitude,
+    this.open,
+    this.close,
+  });
+
+  factory Office.fromJson(Map<String, dynamic> json) {
+    return switch (json) {
+      {
+        'id': String id,
+        'name': String name,
+        'address': String address,
+        'city': String city,
+        'state': String state,
+        'zip': String zip,
+        'latitude': double? latitude,
+        'longitude': double? longitude,
+        'open': String open,
+        'close': String close,
+      } =>
+        Office(
+          id: id,
+          name: name,
+          address: address,
+          city: city,
+          state: state,
+          zip: zip,
+          latitude: latitude,
+          longitude: longitude,
+          open: open,
+          close: close,
+        ),
+      _ => throw const FormatException('Failed to load office.'),
+    };
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -26,23 +86,82 @@ class MyApp extends StatelessWidget {
 }
 
 class MyAppState extends ChangeNotifier {
-  var current = WordPair.random();
+  String? accessToken;
+  List<Office?> offices = [];
 
-  void getNext() {
-    current = WordPair.random();
-    notifyListeners();
-  }
+  Future<void> login() async {
+    final encondedToken = base64.encode(utf8.encode("admin@cc.com:admin"));
+    final response = await http.get(
+        Uri.parse('http://10.0.2.2:9191/public/login'),
+        headers: {HttpHeaders.authorizationHeader: 'Basic $encondedToken'});
 
-  var favorites = <WordPair>[];
-
-  void toggleFavorite() {
-    if (favorites.contains(current)) {
-      favorites.remove(current);
+    if (response.statusCode == 200) {
+      final responseBody = jsonDecode(response.body);
+      accessToken = responseBody['access_token'];
+      print(accessToken);
     } else {
-      favorites.add(current);
+      print("bad login");
     }
 
     notifyListeners();
+  }
+
+  Future<void> get() async {
+    final response = await http.get(
+        Uri.parse('http://10.0.2.2:9090/api/v1/offices'),
+        headers: {HttpHeaders.authorizationHeader: 'Bearer $accessToken'});
+
+    if (response.statusCode == 200) {
+      final responseBody = jsonDecode(response.body);
+      final resp = responseBody['content'] as List<dynamic>;
+      final officesList = resp.map((officeJson) {
+        try {
+          return Office.fromJson(officeJson as Map<String, dynamic>);
+        } catch (e) {
+          print(e);
+        }
+      }).toList();
+      offices = officesList;
+      print(officesList.length);
+    } else {
+      print("bad login");
+    }
+
+    // notifyListeners();
+  }
+
+  Future<void> put() async {
+    final response = await http.post(
+      Uri.parse('http://10.0.2.2:9090/api/v1/offices'),
+      headers: {
+        HttpHeaders.authorizationHeader: 'Bearer $accessToken',
+        HttpHeaders.contentTypeHeader: 'application/json; charset=UTF-8'
+      },
+      // headers: <String, String>{
+      //   'Content-Type': 'application/json; charset=UTF-8',
+      //   'Authorization': 'Bearer $accessToken'
+      // },
+      body: jsonEncode(<String, String>{
+        "id": "",
+        "name": "",
+        "address": "",
+        "city": "",
+        "state": "",
+        "zip": "",
+        "latitude": "",
+        "longitude": "",
+        "open": "",
+        "close": "",
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final responseBody = jsonDecode(response.body);
+      final content = responseBody['content'];
+      print(content);
+    } else {
+      print("bad login");
+    }
   }
 }
 
@@ -58,73 +177,41 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    Widget page;
-    switch (selectedIndex) {
-      case 0:
-        page = GeneratorPage();
-      case 1:
-        page = Placeholder();
-      default:
-        throw UnimplementedError("no widget for $selectedIndex");
-    }
-
     return LayoutBuilder(builder: (context, constraints) {
       return Scaffold(
-        body: Row(
-          children: [
-            SafeArea(
-              child: NavigationRail(
-                extended: constraints.maxWidth >= 600,
-                destinations: [
-                  NavigationRailDestination(
-                    icon: Icon(Icons.home),
-                    label: Text('Home'),
-                  ),
-                  NavigationRailDestination(
-                    icon: Icon(Icons.favorite),
-                    label: Text('Favorites'),
-                  ),
-                ],
-                selectedIndex: selectedIndex,
-                onDestinationSelected: (value) {
-                  setState(() {
-                    selectedIndex = value;
-                  });
-                },
-              ),
-            ),
-            Expanded(
-              child: Container(
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  child: page),
-            ),
-          ],
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [GeneratorPage()],
         ),
       );
     });
   }
 }
 
-class Placeholder extends StatelessWidget {
+class FavoritesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
-    var favorites = appState.favorites;
 
-    if (favorites.isEmpty) {
+    if (appState.offices.isEmpty) {
       return Center(
-        child: Text("No favorites yet!"),
+        child: Text('No favorites yet.'),
       );
     }
 
     return ListView(
-      children: favorites
-          .map(
-            (fav) => ListTile(
-                leading: Icon(Icons.favorite),
-                title: Text("${fav.first} ${fav.second}")),
-          )
-          .toList(),
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(20),
+          child: Text('You have '
+              '${appState.offices.length} offices:'),
+        ),
+        for (var office in appState.offices)
+          ListTile(
+            leading: Icon(Icons.favorite),
+            title: Text(office!.id),
+          ),
+      ],
     );
   }
 }
@@ -133,37 +220,34 @@ class GeneratorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
-    var pair = appState.current;
-
-    IconData icon;
-    if (appState.favorites.contains(pair)) {
-      icon = Icons.favorite;
-    } else {
-      icon = Icons.favorite_border;
-    }
 
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          BigCard(pair: pair),
-          SizedBox(height: 10),
+          // FavoritesPage(),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ElevatedButton.icon(
+              ElevatedButton(
                 onPressed: () {
-                  appState.toggleFavorite();
+                  appState.login();
                 },
-                icon: Icon(icon),
-                label: Text('Like'),
+                child: Text('Login'),
               ),
               SizedBox(width: 10),
               ElevatedButton(
                 onPressed: () {
-                  appState.getNext();
+                  appState.get();
                 },
-                child: Text('Next'),
+                child: Text('Get Offices'),
+              ),
+              SizedBox(width: 10),
+              ElevatedButton(
+                onPressed: () {
+                  appState.put();
+                },
+                child: Text('Create Office'),
               ),
             ],
           ),
