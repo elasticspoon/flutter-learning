@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:test_flutter/services/offices_api.dart';
 import 'package:test_flutter/services/user_auth.dart';
 import 'package:test_flutter/widgets/office_list.dart';
@@ -24,14 +25,16 @@ class OfficesIndex extends StatelessWidget {
               SizedBox(width: 10),
               ElevatedButton(
                 onPressed: () {
-                  final auth = UserAuth.of(context);
-                  index(auth);
+                  index();
                 },
                 child: Text('Get Offices'),
               ),
               SizedBox(width: 10),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  final id = await create();
+                  context.go('/office/${id}');
+                },
                 child: Text('Create Office'),
               ),
             ],

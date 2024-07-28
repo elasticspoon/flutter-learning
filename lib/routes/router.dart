@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:test_flutter/main.dart';
 import 'package:test_flutter/screens/sign_in.dart';
 import 'package:test_flutter/services/user_auth.dart';
+import 'package:test_flutter/widgets/office_details.dart';
 
 // GoRouter configuration
 final appRouter = GoRouter(
@@ -19,6 +20,15 @@ final appRouter = GoRouter(
       path: '/',
       builder: (context, state) => MyHomePage(),
     ),
+    GoRoute(
+        path: '/office/:bookId',
+        builder: (BuildContext context, GoRouterState state) {
+          final String bookId = state.pathParameters['bookId']!;
+
+          return OfficeDetailsScreen(
+            officeId: bookId,
+          );
+        }),
     GoRoute(
       path: '/sign-in',
       builder: (context, state) {

@@ -36,6 +36,11 @@ class JwtInterceptor extends Interceptor {
   Future onError(DioException err, ErrorInterceptorHandler handler) async {
     if (err.response?.statusCode == 401 &&
         err.response?.statusMessage == 'Unauthorized') {
+      // err.response?.statusMessage == 'Unauthorized' &&
+      // err.response?.requestOptions.path != null &&
+      // !err.response!.requestOptions.path.contains('/public/login')) {
+      print(err.response?.requestOptions.path);
+      print(err.response?.requestOptions.headers);
       final didRefresh = await HttpClient().auth.refreshTokens();
 
       if (didRefresh) {

@@ -6,8 +6,8 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:test_flutter/models/login_response.dart';
-import 'package:test_flutter/providers/auth_provider.dart';
 import 'package:test_flutter/services/http.dart';
+import 'package:test_flutter/services/token_store.dart';
 
 class UserAuth extends ChangeNotifier {
   String? authToken;
