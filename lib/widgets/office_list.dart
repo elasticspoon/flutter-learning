@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:test_flutter/models/office.dart';
 import 'package:test_flutter/services/offices_api.dart';
 import 'package:test_flutter/services/user_auth.dart';
-
-import '../models.dart';
 
 class OfficeList extends StatefulWidget {
   const OfficeList({super.key});
@@ -35,17 +34,35 @@ class _OfficeListState extends State<OfficeList> {
         }
 
         final offices = snapshot.data!;
-        return ListView.builder(
-          itemCount: offices.length,
+        return GridView.builder(
+          // Create a grid with 2 columns.
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+          ),
+          // The itemBuilder function builds each item in the grid.
           itemBuilder: (context, index) {
             final office = offices[index];
-            return ListTile(
-              title: Text(office?.id ?? 'Unknown Office'),
-              tileColor: Theme.of(context).colorScheme.primary,
-              hoverColor: Theme.of(context).colorScheme.secondary,
+            return Center(
+              child: Text(
+                'Office ${office!.id}',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
             );
           },
+          itemCount:
+              offices.length, // Specify the total number of items in the grid.
         );
+        // return ListView.builder(
+        //   itemCount: offices.length,
+        //   itemBuilder: (context, index) {
+        //     final office = offices[index];
+        //     return ListTile(
+        //       title: Text(office?.id ?? 'Unknown Office'),
+        //       tileColor: Theme.of(context).colorScheme.primary,
+        //       hoverColor: Theme.of(context).colorScheme.secondary,
+        //     );
+        //   },
+        // );
       },
     );
   }
