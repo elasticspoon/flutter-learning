@@ -62,11 +62,11 @@ class HttpClient {
         authEndpoint = getAuthEndpoint();
 
   static HttpClient? _instance;
-  final AppAuth auth;
+  final UserAuth auth;
   final Dio apiEndpoint;
   final Dio authEndpoint;
 
-  static HttpClient initialize(AppAuth auth) {
+  static HttpClient initialize(UserAuth auth) {
     _instance ??= HttpClient._privateConstructor(auth);
     return _instance!;
   }

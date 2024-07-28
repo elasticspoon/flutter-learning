@@ -21,7 +21,7 @@ class _OfficeListState extends State<OfficeList> {
 
   @override
   Widget build(BuildContext context) {
-    final appAuth = AppAuth.of(context);
+    final appAuth = UserAuth.of(context);
 
     return FutureBuilder<List<Office?>>(
       future: index(appAuth),

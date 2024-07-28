@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:test_flutter/main.dart';
-import 'package:test_flutter/providers/auth_provider.dart';
-
 import 'package:test_flutter/screens/sign_in.dart';
 import 'package:test_flutter/services/user_auth.dart';
 
 // GoRouter configuration
 final appRouter = GoRouter(
-  refreshListenable: AppAuth(),
+  refreshListenable: UserAuth(),
   initialLocation: '/',
   redirect: (context, state) {
-    if (!AppAuth.of(context).signedIn) {
+    if (!UserAuth.of(context).signedIn) {
       return '/sign-in';
     }
     return null;
@@ -30,7 +28,7 @@ final appRouter = GoRouter(
             return SignInScreen(
               onSignIn: (value) async {
                 final router = GoRouter.of(context);
-                await AppAuth.of(context)
+                await UserAuth.of(context)
                     .signIn(value.username, value.password);
                 router.go('/');
               },

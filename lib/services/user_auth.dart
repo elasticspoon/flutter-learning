@@ -9,11 +9,11 @@ import 'package:test_flutter/models/login_response.dart';
 import 'package:test_flutter/providers/auth_provider.dart';
 import 'package:test_flutter/services/http.dart';
 
-class AppAuth extends ChangeNotifier {
+class UserAuth extends ChangeNotifier {
   String? authToken;
   String? refreshToken;
 
-  AppAuth() {
+  UserAuth() {
     loadValidTokens();
   }
 
@@ -121,19 +121,19 @@ class AppAuth extends ChangeNotifier {
 
   @override
   bool operator ==(Object other) =>
-      other is AppAuth &&
+      other is UserAuth &&
       other.authToken == authToken &&
       other.refreshToken == refreshToken;
 
   @override
   int get hashCode => authToken.hashCode;
 
-  static AppAuth of(BuildContext context) =>
-      context.dependOnInheritedWidgetOfExactType<AppAuthScope>()!.notifier!;
+  static UserAuth of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<UserAuthScope>()!.notifier!;
 }
 
-class AppAuthScope extends InheritedNotifier<AppAuth> {
-  const AppAuthScope({
+class UserAuthScope extends InheritedNotifier<UserAuth> {
+  const UserAuthScope({
     required super.notifier,
     required super.child,
     super.key,
