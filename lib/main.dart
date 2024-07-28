@@ -3,9 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:test_flutter/routes/router.dart';
 import 'package:test_flutter/screens/office_index.dart';
 import 'package:test_flutter/services/http.dart';
-import 'package:test_flutter/services/offices_api.dart';
 import 'package:test_flutter/services/user_auth.dart';
-import 'package:test_flutter/widgets/office_list.dart';
 
 void main() {
   runApp(MultiProvider(
