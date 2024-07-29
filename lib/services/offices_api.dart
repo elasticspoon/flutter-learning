@@ -21,21 +21,24 @@ Future<Office?> show(String id) async {
   }
 }
 
-Future<String?> create() async {
-  final response = await HttpClient().apiEndpoint.post('/api/v1/offices',
-      data: Office(
-        id: 'test',
-        name: 'test',
-        address: 'test',
-        city: 'test',
-        state: 'test',
-        zip: 'test',
-        open: 'test',
-        close: 'test',
-      ).toJson());
+Future<String?> update(Office office) async {
+  final response = await HttpClient()
+      .apiEndpoint
+      .put('/api/v1/offices/${office.id}', data: office.toJson());
 
   if (response.statusCode == 200) {
-    print(response.data);
+    return Office.fromJson(response.data).id;
+  } else {
+    throw Exception('Failed to load offices');
+  }
+}
+
+Future<String?> create(Office office) async {
+  final response = await HttpClient()
+      .apiEndpoint
+      .post('/api/v1/offices', data: office.toJson());
+
+  if (response.statusCode == 200) {
     return Office.fromJson(response.data).id;
   } else {
     throw Exception('Failed to load offices');

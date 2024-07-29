@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:test_flutter/models/office.dart';
+import 'package:test_flutter/screens/office_edit.dart';
 import 'package:test_flutter/services/offices_api.dart';
 // import 'package:url_launcher/link.dart';
 
@@ -47,6 +48,16 @@ class _OfficeDetailsScreenState extends State<OfficeDetailsScreen> {
             appBar: AppBar(
               title: Text(office.name),
             ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => OfficeEdit(office: office),
+                    ));
+              },
+              child: Icon(Icons.edit),
+            ),
             body: Center(
               child: Column(
                 children: <Widget>[
@@ -54,29 +65,6 @@ class _OfficeDetailsScreenState extends State<OfficeDetailsScreen> {
                     office.name,
                     style: Theme.of(context).textTheme.headlineMedium,
                   ),
-                  // Text(
-                  //   office!.author.name,
-                  //   style: Theme.of(context).textTheme.titleMedium,
-                  // ),
-                  // TextButton(
-                  //   onPressed: () {
-                  //     Navigator.of(context).push<void>(
-                  //       MaterialPageRoute<void>(
-                  //         builder: (BuildContext context) =>
-                  //             AuthorDetailsScreen(author: office!.author),
-                  //       ),
-                  //     );
-                  //   },
-                  //   child: const Text('View author (navigator.push)'),
-                  // ),
-                  // Link(
-                  //   uri: Uri.parse('/author/${office!.author.id}'),
-                  //   builder: (BuildContext context, FollowLink? followLink) =>
-                  //       TextButton(
-                  //     onPressed: followLink,
-                  //     child: const Text('View author (Link)'),
-                  //   ),
-                  // ),
                   TextButton(
                     onPressed: () {
                       context.go('/');

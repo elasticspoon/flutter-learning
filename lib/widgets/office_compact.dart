@@ -13,7 +13,8 @@ class OfficeCompact extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(office?.id ?? 'Unknown Office'),
+      leading: Icon(Icons.house),
+      title: Text(office?.name ?? 'Unknown Office'),
       subtitle: Text(office?.city ?? 'Unknown City'),
       onTap: () {
         context.go('/office/${office?.id}');

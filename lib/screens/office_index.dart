@@ -32,8 +32,8 @@ class OfficesIndex extends StatelessWidget {
               SizedBox(width: 10),
               ElevatedButton(
                 onPressed: () async {
-                  final id = await create();
-                  context.go('/office/${id}');
+                  // final id = await create();
+                  context.go('/office/new');
                 },
                 child: Text('Create Office'),
               ),

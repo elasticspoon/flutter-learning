@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:test_flutter/models/office.dart';
+import 'package:test_flutter/services/offices_api.dart';
+import 'package:test_flutter/widgets/required_field.dart';
 
 // Define a custom Form widget.
 class OfficeForm extends StatefulWidget {
-  const OfficeForm({super.key});
+  const OfficeForm({super.key, this.office});
+
+  final Office? office;
 
   @override
   OfficeFormState createState() {
@@ -29,34 +35,71 @@ class OfficeFormState extends State<OfficeForm> {
 
   @override
   Widget build(BuildContext context) {
-    // Build a Form widget using the _formKey created above.
     return Form(
       key: _formKey,
       child: Column(
         children: <Widget>[
-          RequiredField(nameController),
-          // Add TextFormFields and ElevatedButton here.
+          RequiredField(
+            controller: nameController,
+            initialValue: widget.office?.name,
+            label: "Office Name",
+          ),
+          RequiredField(
+            controller: addressController,
+            initialValue: widget.office?.address,
+            label: "Street Address",
+          ),
+          RequiredField(
+            controller: cityController,
+            initialValue: widget.office?.city,
+            label: "City",
+          ),
+          RequiredField(
+            controller: zipController,
+            initialValue: widget.office?.zip,
+            label: "Zip Code",
+          ),
+          RequiredField(
+            controller: stateController,
+            initialValue: widget.office?.state,
+            label: "State",
+          ),
+          RequiredField(
+            controller: openController,
+            initialValue: widget.office?.open,
+            label: "Open Time",
+          ),
+          RequiredField(
+            controller: closeController,
+            initialValue: widget.office?.close,
+            label: "Close Time",
+          ),
+          ElevatedButton(
+            onPressed: () {
+              // Validate returns true if the form is valid, or false otherwise.
+              if (_formKey.currentState!.validate()) {
+                final office = Office(
+                  id: widget.office?.id ?? '',
+                  name: nameController.text,
+                  address: addressController.text,
+                  city: cityController.text,
+                  state: stateController.text,
+                  zip: zipController.text,
+                  open: openController.text,
+                  close: closeController.text,
+                );
+                if (widget.office != null) {
+                  update(office);
+                } else {
+                  create(office);
+                }
+                context.go('/office/${office.id}');
+              }
+            },
+            child: const Text('Submit'),
+          ),
         ],
       ),
-    );
-  }
-}
-
-class RequiredField extends StatelessWidget {
-  const RequiredField({super.key, required this.controller});
-
-  final TextEditingController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter some text';
-        }
-        return null;
-      },
-      controller: controller,
     );
   }
 }
