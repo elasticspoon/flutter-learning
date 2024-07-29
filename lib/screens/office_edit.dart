@@ -51,13 +51,23 @@ class _OfficeEditState extends State<OfficeEdit> {
           final office = snapshot.data;
           return Scaffold(
             appBar: NavBar(),
-            body: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                OfficeForm(
-                  office: office,
-                )
-              ],
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom,
+                  top: 8.0,
+                  left: 8.0,
+                  right: 8.0,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    OfficeForm(
+                      office: office,
+                    )
+                  ],
+                ),
+              ),
             ),
           );
         });

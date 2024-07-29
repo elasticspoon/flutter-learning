@@ -11,11 +11,6 @@ class OfficesIndex extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           context.go('/office/new');
-          // Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //       builder: (context) => OfficeEdit(office: office),
-          //     ));
         },
         child: Icon(Icons.add),
       ),

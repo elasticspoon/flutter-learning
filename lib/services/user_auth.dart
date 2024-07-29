@@ -74,9 +74,9 @@ class UserAuth extends ChangeNotifier {
           HttpHeaders.authorizationHeader: 'Basic $encondedToken'
         }));
 
-    // Sign in. Allow any password.
     if (response.statusCode == 200) {
-      updateTokens(LoginResponse.fromJson(response.data));
+      final resp = LoginResponse.fromJson(response.data);
+      updateTokens(resp);
     } else {
       print("bad login");
     }

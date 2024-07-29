@@ -34,6 +34,15 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Color.fromARGB(1, 0, 94, 162),
+          // ···
+          brightness: Brightness.light,
+        ),
+        textTheme: TextTheme(),
+      ),
       builder: (context, child) {
         if (child == null) {
           throw ('No child in .router constructor builder');

@@ -13,7 +13,7 @@ Dio getAuthEndpoint() {
 }
 
 const apiUrl =
-    String.fromEnvironment('API_URL', defaultValue: 'http://10.0.2.2:9191');
+    String.fromEnvironment('API_URL', defaultValue: 'http://10.0.2.2:9090');
 
 class JwtInterceptor extends Interceptor {
   @override
@@ -50,6 +50,8 @@ class JwtInterceptor extends Interceptor {
         HttpClient().auth.signOut();
       }
     }
+    print(err.response?.statusCode);
+    print(err.response?.statusMessage);
     return handler.next(err);
   }
 }

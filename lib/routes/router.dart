@@ -57,6 +57,7 @@ final appRouter = GoRouter(
                 final router = GoRouter.of(context);
                 await UserAuth.of(context)
                     .signIn(value.username, value.password);
+
                 router.go('/');
               },
             );
