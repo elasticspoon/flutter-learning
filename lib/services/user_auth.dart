@@ -59,8 +59,6 @@ class UserAuth extends ChangeNotifier {
     // Sign in. Allow any password.
     if (response.statusCode == 200) {
       updateTokens(LoginResponse.fromJson(response.data));
-    } else {
-      print("bad login");
     }
 
     notifyListeners();
@@ -77,8 +75,6 @@ class UserAuth extends ChangeNotifier {
     if (response.statusCode == 200) {
       final resp = LoginResponse.fromJson(response.data);
       updateTokens(resp);
-    } else {
-      print("bad login");
     }
 
     notifyListeners();

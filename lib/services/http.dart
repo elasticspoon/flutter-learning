@@ -18,6 +18,7 @@ const apiUrl =
 class JwtInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    print('REQUEST[${options.method}] => PATH: ${options.path}');
     if (!options.path.contains('login')) {
       final authToken = HttpClient().auth.authToken;
       options.headers['Authorization'] = 'Bearer $authToken';
@@ -34,13 +35,10 @@ class JwtInterceptor extends Interceptor {
 
   @override
   Future onError(DioException err, ErrorInterceptorHandler handler) async {
+    print(
+        'ERROR[${err.response?.statusCode}] => PATH: ${err.requestOptions.path}: ${err.response?.statusMessage}');
     if (err.response?.statusCode == 401 &&
         err.response?.statusMessage == 'Unauthorized') {
-      // err.response?.statusMessage == 'Unauthorized' &&
-      // err.response?.requestOptions.path != null &&
-      // !err.response!.requestOptions.path.contains('/public/login')) {
-      print(err.response?.requestOptions.path);
-      print(err.response?.requestOptions.headers);
       final didRefresh = await HttpClient().auth.refreshTokens();
 
       if (didRefresh) {
@@ -50,8 +48,6 @@ class JwtInterceptor extends Interceptor {
         HttpClient().auth.signOut();
       }
     }
-    print(err.response?.statusCode);
-    print(err.response?.statusMessage);
     return handler.next(err);
   }
 }

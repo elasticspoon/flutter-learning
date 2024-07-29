@@ -15,6 +15,9 @@ final appRouter = GoRouter(
     if (!UserAuth.of(context).signedIn) {
       return '/sign-in';
     }
+    if (state.matchedLocation == '/sign-in') {
+      return '/';
+    }
     return null;
   },
   routes: [
