@@ -60,13 +60,44 @@ class _OfficeDetailsScreenState extends State<OfficeDetailsScreen> {
               },
               child: Icon(Icons.edit),
             ),
-            body: Center(
-              child: Column(
-                children: <Widget>[
-                  Text(
-                    office.name,
-                    style: Theme.of(context).textTheme.headlineMedium,
+            body: Padding(
+              padding: EdgeInsets.all(36.0),
+              child: ListView(
+                children: [
+                  ListTile(
+                    title: Text('Name'),
+                    subtitle: Text(office.name),
                   ),
+                  ListTile(
+                    title: Text('Address'),
+                    subtitle: Text(office.address),
+                  ),
+                  ListTile(
+                    title: Text('City'),
+                    subtitle: Text(office.city),
+                  ),
+                  ListTile(
+                    title: Text('State'),
+                    subtitle: Text(office.state),
+                  ),
+                  ListTile(
+                    title: Text('ZIP Code'),
+                    subtitle: Text(office.zip),
+                  ),
+                  ListTile(
+                    title: Text('Open'),
+                    subtitle: Text(office.open),
+                  ),
+                  ListTile(
+                    title: Text('Close'),
+                    subtitle: Text(office.close),
+                  ),
+                  if (office.latitude != null && office.longitude != null)
+                    ListTile(
+                      title: Text('Coordinates'),
+                      subtitle: Text(
+                          'Lat: ${office.latitude}, Long: ${office.longitude}'),
+                    ),
                 ],
               ),
             ),

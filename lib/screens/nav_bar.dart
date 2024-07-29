@@ -22,6 +22,22 @@ class NavBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       actions: [
+        // TextButton.icon(
+        //   onPressed: () {
+        //     context.pop();
+        //   },
+        //   icon: Icon(Icons.arrow_back, color: theme.onPrimary),
+        //   label: Text(
+        //     'Back',
+        //     style: TextStyle(color: theme.onPrimary),
+        //   ),
+        //   style: TextButton.styleFrom(
+        //     backgroundColor: theme.primary, // Set the background color
+        //   ),
+        // ),
+        // SizedBox(
+        //   width: 8.0,
+        // ),
         TextButton.icon(
           onPressed: () {
             final auth = UserAuth.of(context);

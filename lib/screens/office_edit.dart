@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test_flutter/models/office.dart';
+import 'package:test_flutter/screens/nav_bar.dart';
 import 'package:test_flutter/services/offices_api.dart';
 import 'package:test_flutter/widgets/office_form.dart';
 
@@ -49,6 +50,7 @@ class _OfficeEditState extends State<OfficeEdit> {
 
           final office = snapshot.data;
           return Scaffold(
+            appBar: NavBar(),
             body: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

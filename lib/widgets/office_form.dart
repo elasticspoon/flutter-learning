@@ -1,9 +1,11 @@
+import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:test_flutter/models/office.dart';
 import 'package:test_flutter/models/office_reponse.dart';
 import 'package:test_flutter/services/offices_api.dart';
 import 'package:test_flutter/widgets/required_field.dart';
+import 'package:test_flutter/widgets/time_picker.dart';
 
 // Define a custom Form widget.
 class OfficeForm extends StatefulWidget {
@@ -27,11 +29,11 @@ class OfficeFormState extends State<OfficeForm> {
   // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
-  final openController = TextEditingController();
   final addressController = TextEditingController();
   final cityController = TextEditingController();
   final zipController = TextEditingController();
   final stateController = TextEditingController();
+  final openController = TextEditingController();
   final closeController = TextEditingController();
 
   Future<void> submitForm() async {
