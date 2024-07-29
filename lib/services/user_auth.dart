@@ -51,6 +51,10 @@ class UserAuth extends ChangeNotifier {
       return false;
     }
 
+    if (JwtDecoder.isExpired(refreshToken!)) {
+      return false;
+    }
+
     final response = await HttpClient().authEndpoint.get('/public/refresh',
         options: Options(headers: {
           HttpHeaders.authorizationHeader: 'Bearer $refreshToken'
