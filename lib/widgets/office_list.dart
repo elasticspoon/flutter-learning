@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:test_flutter/models/office.dart';
+import 'package:test_flutter/models/office_reponse.dart';
 import 'package:test_flutter/services/offices_api.dart';
-import 'package:test_flutter/services/user_auth.dart';
 import 'package:test_flutter/widgets/office_compact.dart';
 
 class OfficeList extends StatefulWidget {
@@ -17,6 +17,16 @@ class _OfficeListState extends State<OfficeList> {
   @override
   void initState() {
     super.initState();
+    offices = fetchOffices();
+  }
+
+  Future<List<Office?>> fetchOffices() async {
+    OfficeReponse response = await index();
+    if (response.success) {
+      return response.offices!;
+    } else {
+      throw Exception(response.error!);
+    }
   }
 
   void _deleteAt(int index) {
@@ -31,7 +41,7 @@ class _OfficeListState extends State<OfficeList> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Office?>>(
-      future: index(),
+      future: offices,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator();
@@ -42,24 +52,6 @@ class _OfficeListState extends State<OfficeList> {
         }
 
         final offices = snapshot.data!;
-        // return GridView.builder(
-        //   // Create a grid with 2 columns.
-        //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        //     crossAxisCount: 2,
-        //   ),
-        //   // The itemBuilder function builds each item in the grid.
-        //   itemBuilder: (context, index) {
-        //     final office = offices[index];
-        //     return Center(
-        //       child: Text(
-        //         'Office ${office!.id}',
-        //         style: Theme.of(context).textTheme.headlineSmall,
-        //       ),
-        //     );
-        //   },
-        //   itemCount:
-        //       offices.length, // Specify the total number of items in the grid.
-        // );
         return ListView.builder(
           itemCount: offices.length,
           itemBuilder: (context, index) {

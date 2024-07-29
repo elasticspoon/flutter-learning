@@ -1,22 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:test_flutter/models/office.dart';
-import 'package:test_flutter/screens/office_edit.dart';
+import 'package:test_flutter/screens/nav_bar.dart';
 import 'package:test_flutter/services/offices_api.dart';
-// import 'package:url_launcher/link.dart';
-
-// import '../data.dart';
-// import 'author_details.dart';
 
 class OfficeDetailsScreen extends StatefulWidget {
   /// Creates a [OfficeDetailsScreen].
-  const OfficeDetailsScreen({
-    super.key,
-    required this.officeId,
-  });
+  const OfficeDetailsScreen({super.key, this.officeId, this.office});
 
-  /// The book to be displayed.
-  final String officeId;
+  final Office? office;
+  final String? officeId;
 
   @override
   State<OfficeDetailsScreen> createState() => _OfficeDetailsScreenState();
@@ -30,10 +23,25 @@ class _OfficeDetailsScreenState extends State<OfficeDetailsScreen> {
     super.initState();
   }
 
+  Future<Office?> getOffice() async {
+    if (widget.office != null) {
+      return widget.office;
+    } else if (widget.officeId != null) {
+      final result = await show(widget.officeId!);
+      if (result.success) {
+        return result.office;
+      } else {
+        throw Exception(result.error);
+      }
+    } else {
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Office?>(
-        future: show(widget.officeId),
+        future: getOffice(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return CircularProgressIndicator();
@@ -45,16 +53,10 @@ class _OfficeDetailsScreenState extends State<OfficeDetailsScreen> {
 
           final office = snapshot.data!;
           return Scaffold(
-            appBar: AppBar(
-              title: Text(office.name),
-            ),
+            appBar: NavBar(),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => OfficeEdit(office: office),
-                    ));
+                context.go('/office/${office.id}/edit', extra: office);
               },
               child: Icon(Icons.edit),
             ),
@@ -64,12 +66,6 @@ class _OfficeDetailsScreenState extends State<OfficeDetailsScreen> {
                   Text(
                     office.name,
                     style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      context.go('/');
-                    },
-                    child: const Text('Home'),
                   ),
                 ],
               ),

@@ -10,6 +10,13 @@ class OfficeCompact extends StatelessWidget {
   final Office? office;
   final VoidCallback onDelete;
 
+  Future<void> deleteTile(String id) async {
+    final result = await delete(id);
+    if (result.success) {
+      onDelete();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -17,12 +24,12 @@ class OfficeCompact extends StatelessWidget {
       title: Text(office?.name ?? 'Unknown Office'),
       subtitle: Text(office?.city ?? 'Unknown City'),
       onTap: () {
-        context.go('/office/${office?.id}');
+        context.go('/office/${office?.id}', extra: office);
       },
       trailing: IconButton(
         icon: Icon(Icons.delete), // You can use any icon or widget here
         onPressed: () {
-          delete(office!.id);
+          deleteTile(office!.id);
         },
       ),
     );

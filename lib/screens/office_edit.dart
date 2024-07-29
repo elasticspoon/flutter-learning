@@ -21,13 +21,18 @@ class _OfficeEditState extends State<OfficeEdit> {
     super.initState();
   }
 
-  Future<Office?> getOffice() {
+  Future<Office?> getOffice() async {
     if (widget.office != null) {
-      return Future.value(widget.office);
+      return widget.office;
     } else if (widget.officeId != null) {
-      return show(widget.officeId!);
+      final result = await show(widget.officeId!);
+      if (result.success) {
+        return result.office;
+      } else {
+        throw Exception(result.error);
+      }
     } else {
-      return Future.value(null);
+      return null;
     }
   }
 

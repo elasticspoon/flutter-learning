@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:test_flutter/my_home_page.dart';
+import 'package:test_flutter/models/office.dart';
 import 'package:test_flutter/screens/office_edit.dart';
+import 'package:test_flutter/screens/office_index.dart';
 import 'package:test_flutter/screens/sign_in.dart';
 import 'package:test_flutter/services/user_auth.dart';
 import 'package:test_flutter/widgets/office_details.dart';
@@ -19,14 +20,15 @@ final appRouter = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => MyHomePage(),
+      builder: (context, state) => OfficesIndex(),
     ),
     GoRoute(
         path: '/office/:officeId/edit',
         builder: (BuildContext context, GoRouterState state) {
           final String officeId = state.pathParameters['officeId']!;
+          final Office? office = state.extra as Office?;
 
-          return OfficeEdit(officeId: officeId);
+          return OfficeEdit(office: office, officeId: officeId);
         }),
     GoRoute(
         path: '/office/new',
@@ -37,8 +39,10 @@ final appRouter = GoRouter(
         path: '/office/:officeId',
         builder: (BuildContext context, GoRouterState state) {
           final String officeId = state.pathParameters['officeId']!;
+          final Office? office = state.extra as Office?;
 
           return OfficeDetailsScreen(
+            office: office,
             officeId: officeId,
           );
         }),

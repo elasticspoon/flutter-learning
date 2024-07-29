@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:test_flutter/models/office.dart';
+import 'package:test_flutter/models/office_reponse.dart';
 import 'package:test_flutter/services/offices_api.dart';
 import 'package:test_flutter/widgets/required_field.dart';
 
@@ -32,6 +33,56 @@ class OfficeFormState extends State<OfficeForm> {
   final zipController = TextEditingController();
   final stateController = TextEditingController();
   final closeController = TextEditingController();
+
+  Future<void> submitForm() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+    final office = Office(
+      id: widget.office?.id ?? '',
+      name: nameController.text,
+      address: addressController.text,
+      city: cityController.text,
+      state: stateController.text,
+      zip: zipController.text,
+      open: openController.text,
+      close: closeController.text,
+    );
+
+    OfficeReponse officeResult;
+    if (widget.office != null) {
+      officeResult = await update(office);
+    } else {
+      officeResult = await create(office);
+    }
+    if (mounted) {
+      if (officeResult.success) {
+        context.go('/');
+      } else {
+        showError(context, officeResult.error!);
+      }
+    }
+  }
+
+  void showError(BuildContext context, String error) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: Text(error),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,25 +127,7 @@ class OfficeFormState extends State<OfficeForm> {
           ),
           ElevatedButton(
             onPressed: () {
-              // Validate returns true if the form is valid, or false otherwise.
-              if (_formKey.currentState!.validate()) {
-                final office = Office(
-                  id: widget.office?.id ?? '',
-                  name: nameController.text,
-                  address: addressController.text,
-                  city: cityController.text,
-                  state: stateController.text,
-                  zip: zipController.text,
-                  open: openController.text,
-                  close: closeController.text,
-                );
-                if (widget.office != null) {
-                  update(office);
-                } else {
-                  create(office);
-                }
-                context.go('/office/${office.id}');
-              }
+              submitForm();
             },
             child: const Text('Submit'),
           ),

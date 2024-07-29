@@ -1,51 +1,55 @@
 import 'package:test_flutter/models/office.dart';
+import 'package:test_flutter/models/office_reponse.dart';
 import 'package:test_flutter/services/http.dart';
 
-Future<void> delete(String id) async {
+Future<OfficeReponse> delete(String id) async {
   final response = await HttpClient().apiEndpoint.delete('/api/v1/offices/$id');
 
   if (response.statusCode == 204) {
-    return;
+    return OfficeReponse(success: true);
   } else {
-    throw Exception('Failed to load offices');
+    return OfficeReponse(success: false, error: response.statusMessage);
   }
 }
 
-Future<Office?> show(String id) async {
+Future<OfficeReponse> show(String id) async {
   final response = await HttpClient().apiEndpoint.get('/api/v1/offices/$id');
 
   if (response.statusCode == 200) {
-    return Office.fromJson(response.data);
+    final office = Office.fromJson(response.data);
+    return OfficeReponse(success: true, office: office);
   } else {
     throw Exception('Failed to load offices');
   }
 }
 
-Future<String?> update(Office office) async {
+Future<OfficeReponse> update(Office office) async {
   final response = await HttpClient()
       .apiEndpoint
       .put('/api/v1/offices/${office.id}', data: office.toJson());
 
   if (response.statusCode == 200) {
-    return Office.fromJson(response.data).id;
+    final office = Office.fromJson(response.data);
+    return OfficeReponse(success: true, office: office);
   } else {
-    throw Exception('Failed to load offices');
+    return OfficeReponse(success: false, error: response.statusMessage);
   }
 }
 
-Future<String?> create(Office office) async {
+Future<OfficeReponse> create(Office office) async {
   final response = await HttpClient()
       .apiEndpoint
       .post('/api/v1/offices', data: office.toJson());
 
   if (response.statusCode == 200) {
-    return Office.fromJson(response.data).id;
+    final office = Office.fromJson(response.data);
+    return OfficeReponse(success: true, office: office);
   } else {
-    throw Exception('Failed to load offices');
+    return OfficeReponse(success: false, error: response.statusMessage);
   }
 }
 
-Future<List<Office?>> index() async {
+Future<OfficeReponse> index() async {
   final response = await HttpClient().apiEndpoint.get(
         '/api/v1/offices',
       );
@@ -59,8 +63,8 @@ Future<List<Office?>> index() async {
         print(e);
       }
     }).toList();
-    return officesList;
+    return OfficeReponse(success: true, offices: officesList);
   } else {
-    throw Exception('Failed to load offices');
+    return OfficeReponse(success: false, error: response.statusMessage);
   }
 }
